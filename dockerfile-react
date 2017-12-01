@@ -1,0 +1,22 @@
+FROM node:9.2.0
+
+WORKDIR /var/www/html
+
+# Install and configure `serve` globally.
+# @TODO Just using this for now.
+# Not sure Serve is the best option.
+# RUN npm install -g serve
+# CMD serve -s build
+
+# Copy Package.json FIRST, so we can cache the install step.
+COPY ./app/package.json package.json
+RUN npm install
+
+# Now, bring over the code.
+COPY ./app .
+
+# RUN npm run build --production
+RUN npm run build
+
+
+CMD ["npm", "start"]

@@ -1,0 +1,13 @@
+FROM node:carbon
+
+WORKDIR /var/www/html
+
+# Copy Package.json FIRST, so we can cache the install step.
+COPY ./server/package.json package.json
+RUN npm install
+
+COPY ./server ./
+
+EXPOSE 8383
+
+CMD ["npm", "start"]

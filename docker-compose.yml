@@ -1,0 +1,21 @@
+version: '2'
+services:
+  nodeserver:
+    container_name: nodeserver
+    # Node npm start
+    build:
+      context: .
+      dockerfile: dockerfile-node-server
+    ports:
+      - 8383:8383
+    volumes:
+      - ./server:/var/www/html
+  # React App
+  app:
+    build:
+      context: .
+      dockerfile: dockerfile-react
+    ports:
+      - 8080:8080
+    volumes:
+      - ./app/app:/var/www/html/app
