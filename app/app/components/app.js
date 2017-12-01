@@ -11,7 +11,9 @@ class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      date: new Date(),
       settings: {
+        updateSeconds: 10,
         currency: 'USD',
         currencies: ['USD','EUR','JPY','BTC'],
       },
@@ -20,6 +22,10 @@ class App extends React.Component {
     }
 
     console.log('Fetching: ', this.state.symbols,'...');
+    this.refreshData(this.state.symbols);
+  }
+
+  refreshData = (symbols) => {
     // Get data from the server, then load it up.
     this.getData(this.state.symbols)
       .then( data => {
@@ -28,7 +34,6 @@ class App extends React.Component {
         }
       });
   }
-
 
   /**
    * Fetch the data from the server.
@@ -55,7 +60,6 @@ class App extends React.Component {
         prevState.list[symbols] = data;
       }
       else if (typeof symbols === 'object' && symbols) {
-        console.log('setState for an array!');
         symbols.map( (key, i) => {
           prevState.list[symbols[i]] = data[key];
         });
@@ -75,19 +79,27 @@ class App extends React.Component {
   }
 
   componentDidMount() {
-    console.log('componentDidMount()');
+    // Set the interval of one tick.
+    this.timerID = setInterval(() => this.tick(), this.state.settings.updateSeconds * 1000);
   }
 
   componentWillUnmount() {
-    console.log('componentWillUnmount()');
+    clearInterval(this.timerID);
+  }
+
+  tick() {
+
+    this.refreshData(this.state.symbols);
+
+    this.setState({
+      date: new Date()
+    });
   }
 
   /**
    * Render our components.
    */
   render() {
-
-    console.log('....', this.state.list);
 
     // Chunk the list into groups the size of our row,
     // then map those chunks into the items,

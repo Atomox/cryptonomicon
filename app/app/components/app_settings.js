@@ -23,7 +23,7 @@ class AppSettings extends React.Component {
 
   render() {
     return(
-      <div class="row">
+      <div className="row">
         <fieldset className="large-4 columns">
           <legend></legend>
           {

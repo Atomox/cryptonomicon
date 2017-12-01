@@ -16,8 +16,6 @@ class CurrencyBox extends React.Component {
    */
   render() {
 
-    console.log('Currencies:', this.props.currencies);
-
     return (
       <div className="card">
         <div className="card-divider">
