@@ -18,6 +18,10 @@ app.use(function(req, res, next) {
 });
 
 
+app.get('/favicon.ico', function(req, res) {
+    res.status(204);
+});
+
 app.get('/', (req, res) => {
   res.send('Hi Dad Soup.');
 });
@@ -29,6 +33,15 @@ app.get('/:ticker_symbol', (req, res) => {
       res.json(payload);
     });
 });
+
+app.get('/:ticker_symbol/historical', (req, res) => {
+  console.log(req.params['ticker_symbol'], req.params);
+  crypto.getDataHistorical(req.params['ticker_symbol'])
+    .then(payload => {
+      res.json(payload);
+    });
+});
+
 
 app.listen(PORT, HOST);
 console.log('Running on http://', HOST, ':', PORT);

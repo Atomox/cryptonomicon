@@ -11,12 +11,24 @@ class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      key: _.uniqueId(),
       date: new Date(),
       settings: {
         updateSeconds: 10,
         currency: 'USD',
         currencies: ['USD','EUR','JPY','BTC'],
       },
+      portfolio:{
+        'ETH': {
+          amount: 6.07555,
+          spent: 1325.90,
+        },
+        'LSK': {
+          amount: 129.99999,
+          spent: 189.78,
+        },
+      },
+      historical: {},
       symbols: ['BTC', 'ETH', 'LSK', 'OMG', 'CVC', 'GNT', 'NEO', 'XRP', 'NXT', 'ERC'],
       list: []
     }
@@ -27,24 +39,46 @@ class App extends React.Component {
 
   refreshData = (symbols) => {
     // Get data from the server, then load it up.
-    this.getData(this.state.symbols)
+    this.getData(this.state.symbols, '')
       .then( data => {
         if (data && data.symbol && data.data) {
           this.initList(data.symbol, data.data);
         }
+      });
+
+    // Get historical data if not set or if it is stale.
+    this.getData(this.state.symbols, 'historical')
+      .then( data => {
+        if (typeof data !== 'object' && !data) {
+          throw new Error('Empty or malformatted historical response.');
+        }
+        let syms = data.map( d => d.symbol );
+        this.initList(syms, data, 'historical');
+      })
+      .catch (err => {
+        console.log('Historical fetch Error: ',err);
       });
   }
 
   /**
    * Fetch the data from the server.
    */
-  getData = (symbols) => {
+  getData = (symbols, endpoint) => {
     let url = 'http://localhost:8383/' + symbols.join(',');
 
+    switch(endpoint) {
+      case '':
+        break;
+
+      case 'historical':
+        url = url + '/historical';
+        break;
+    }
+
+    console.log('  ->>', url, ' <<-');
+
     return fetch(url)
-      .then(resp => {
-        return resp.json();
-      })
+      .then(resp => resp.json())
       .catch(err => {
         console.warn('Error fetching data.', err);
         Promise.reject(err) });
@@ -53,20 +87,34 @@ class App extends React.Component {
   /**
    * Load fetched data into the state.
    */
-  initList = (symbols, data) => {
+  initList = (symbols, data, context) => {
     this.setState((prevState) => {
 
-      if (typeof symbols === 'string' && symbol.length > 0) {
-        prevState.list[symbols] = data;
+      switch (context) {
+        case 'historical':
+
+          if (typeof data === 'object' && data){
+            data.map( (key, i) => {
+              prevState.historical[key.symbol] = key.data;
+            });
+          }
+          else {
+            console.warn('Symbol list update without proper data.');
+          }
+          break;
+
+        case '':
+        default:
+          if (typeof symbols === 'object' && symbols) {
+            symbols.map( (key, i) => {
+              prevState.list[symbols[i]] = data[key] })
+          }
+          else {
+            console.warn('Symbol list update without proper data.');
+          }
+          break;
       }
-      else if (typeof symbols === 'object' && symbols) {
-        symbols.map( (key, i) => {
-          prevState.list[symbols[i]] = data[key];
-        });
-      }
-      else {
-        console.warn('setState() without actual data.', symbols);
-      }
+
       return prevState;
     });
   };
@@ -114,11 +162,14 @@ class App extends React.Component {
         }, []);
 
         return (
-          <div className="small-4 cell">
+          <div className="small-12 medium-4 large-3 cell" key={_.uniqueId()}>
             <CurrencyBox
+              key={key}
               currencies={ currencies }
               currency={this.state.settings.currency}
               symbol={key}
+              portfolio={(this.state.portfolio[key]) ? this.state.portfolio[key] : null}
+              historical={(this.state.historical[key]) ? this.state.historical[key] : null}
             />
           </div>
         )
@@ -126,22 +177,20 @@ class App extends React.Component {
 
       // Row of items in a grid.
       return (
-        <div className="grid-x grid-margin-x">
+        <div className="grid-x grid-margin-x" key={_.uniqueId()}>
         {items}
         </div>
       );
     });
 
     return (
-      <div>
-        <div>
+      <div key={this.state.key}>
           <h1>Crypto Prices</h1>
           {<AppSettings
-              currencies={this.state.settings.currencies}
-              currency={this.state.settings.currency}
-              updateCurrency={this.setCurrency}
-            />}
-        </div>
+            currencies={this.state.settings.currencies}
+            currency={this.state.settings.currency}
+            updateCurrency={this.setCurrency}
+          />}
         {renderedList}
       </div>
     );

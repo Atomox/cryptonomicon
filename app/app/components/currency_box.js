@@ -1,21 +1,19 @@
 'use strict';
 
 let React = require('react');
+let InvestmentCard = require('./investment_card');
+let CurrencyHistorical = require('./currency_historical');
+let CurrencyPrice = require('./currency_price');
 
 class CurrencyBox extends React.Component {
 
-
-  formatCurrency = (curr, num) =>
-    (curr == 'BTC')
-      ? num
-      // Enforce 2 decimals, including trailing zeros.
-      : parseFloat(Math.round(num * 100) / 100).toFixed(2);
+  formatPercent = (num) =>
+    parseFloat(Math.round(num * 1000) / 1000).toFixed(3);
 
   /**
    * Render our components.
    */
   render() {
-
     return (
       <div className="card">
         <div className="card-divider">
@@ -27,29 +25,47 @@ class CurrencyBox extends React.Component {
             {
               this.props.currencies.map( (obj, i) => {
                 return (obj.TOSYMBOL === this.props.symbol || obj.TOSYMBOL !== this.props.currency) ? '' : (
-                  <div className="row">
+                  <div className="row" key={i}>
                     <div className="small-8 cell">
-                      <div className="titlePrice">
-                        { this.formatCurrency(obj.TOSYMBOL, obj.PRICE) }
-                      </div>
+                      <CurrencyPrice
+                        isTitle={true}
+                        symbol={obj.TOSYMBOL}
+                        price={obj.PRICE}
+                        positiveChange={(obj.CHANGEPCTDAY > 0)}
+                        showCaret={false}/>
                     </div>
 
                     <div className="small-4 cell">
-                      <small className="titleCurr">{obj.TOSYMBOL}</small>
-                    </div>
-
-                    <div className="small-12 cell">
-                      <small>
-                        <div className="marketUp">
-                          <i className="icon icon-caret-up"></i>
-                          { this.formatCurrency(obj.TOSYMBOL, obj.HIGH24HOUR) }
-                        </div>
-                        <div className="marketDown">
-                          <i className="icon icon-caret-down"></i>
-                          { this.formatCurrency(obj.TOSYMBOL, obj.LOW24HOUR) }
-                        </div>
+                      <small className="titleCurr">
+                      <i className={ (obj.CHANGEPCTDAY > 0)
+                        ? 'icon icon-caret-up marketUp'
+                        : 'icon icon-caret-down marketDown'
+                      }>{this.formatPercent(obj.CHANGEPCTDAY)} %</i>
                       </small>
                     </div>
+
+                    <div className="small-12 medium-8 cell">
+                      <small>
+                        <CurrencyPrice
+                          symbol={obj.TOSYMBOL}
+                          price={obj.HIGH24HOUR}
+                          positiveChange={true}
+                          showCaret={true} />
+
+                          <CurrencyPrice
+                            symbol={obj.TOSYMBOL}
+                            price={obj.LOW24HOUR}
+                            positiveChange={false}
+                            showCaret={true} />
+                      </small>
+                    </div>
+{/*
+                    <CurrencyHistorical
+                      symbol={this.props.symbol}
+                      historical={this.props.historical}
+                      currency={this.props.currency}
+                      />
+*/}
                   </div>
                 );
               })

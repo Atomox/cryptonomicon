@@ -1,5 +1,6 @@
 const axios = require('axios');
 const https = require('https');
+const fs = require('fs');
 
 /*
 https.get(url, res => {
@@ -31,6 +32,9 @@ function getHttps(url) {
       });
 
       res.on('end', () => {
+        if (!body) {
+          throw new Error('Empty body when loading from' + url);
+        }
         // Make it JSON up in here.
         body = JSON.parse(body);
 
@@ -42,6 +46,51 @@ function getHttps(url) {
     });
   });
 }
+
+function fetchEndpoint(url,filename) {
+  return new Promise( (resolve, reject) => {
+    getHttps(url)
+      .then(data => JSON.stringify(data))
+      .then(data => saveEndpointToFile(data, filename))
+      .then(data => resolve(JSON.parse(data)))
+      .catch(err => reject('Problem getting data from endpoint, or saving it afterwards:' + err));
+  });
+}
+
+
+function fetchCachedEndpoint(url, filename, max_age_minutes) {
+
+  // Convert minutes to milliseconds.
+  max_age_minutes = max_age_minutes * 60000;
+
+  // Try loading from file:
+  return new Promise((resolve, reject) => {
+    loadEndpointFromFile(filename)
+      .then ( data => {
+          /**
+            @TODO Check freshness
+              data.TimeTo < age_timestamp
+           */
+          let cachedTime = data.TimeTo * 1000;
+          let currTime = Date.now();
+
+          if (currTime - cachedTime > max_age_minutes) {
+            throw new Exception('CACHE EXPIRED.');
+          }
+
+          console.log('FETCHING FROM CACHE', url);
+
+          return data;
+      })
+      .catch( err => {
+        console.log('Could not load cache because ', err, '. Loading fresh.');
+        return fetchEndpoint(url,filename);
+      })
+      .then(data => resolve(data))
+      .catch(err => reject(err));
+  });
+}
+
 
 async function getURL(url) {
   try {
@@ -55,7 +104,40 @@ async function getURL(url) {
   }
 }
 
+
+function saveEndpointToFile(data, filename) {
+  return new Promise((resolve, reject) =>{
+    fs.writeFile(filename, data, (err) => {
+      if (err) {
+        reject('Problem writing to file: ' + err);
+      }
+      resolve(data);
+    });
+  });
+}
+
+
+function loadEndpointFromFile(filename) {
+  return new Promise((resolve, reject) =>{
+    fs.readFile(filename, 'utf8', (err, data) => {
+      try {
+        if (err) {
+          throw new Error('Error during file read: ' + err);
+        }
+        data = JSON.parse(data);
+        resolve(data);
+      }
+      catch(err) {
+        reject('Problem reading/parsing from file: ' + err);
+      }
+    });
+  });
+}
+
+
 module.exports = {
   getURL,
   getHttps,
+  fetchEndpoint,
+  fetchCachedEndpoint
 };

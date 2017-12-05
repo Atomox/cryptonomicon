@@ -11,8 +11,6 @@ class AppSettings extends React.Component {
   state = AppSettings.initialState(this.props);
 
   handleChange = (event) => {
-    console.log(event.target.name, event.target.value);
-
     switch (event.target.name) {
       case 'currency':
         this.setState({ currency: event.target.value });
@@ -29,7 +27,7 @@ class AppSettings extends React.Component {
           {
             this.props.currencies.map( key => {
               return (
-                <div className="small-3 cell columns">
+                <div className="small-3 cell columns" key={key}>
                 <label htmlFor={"currency" + key}>
                   <input type="radio"
                     name="currency"
