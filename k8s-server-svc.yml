@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: crypto-server-svc
+  labels:
+    app: crypto-server
+spec:
+  type: NodePort
+  ports:
+    - port: 8383
+      nodePort: 30001
+      protocol: TCP
+  selector:
+    app: crypto-server
+    tier: Backend

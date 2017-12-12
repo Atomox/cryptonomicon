@@ -18,5 +18,9 @@ COPY ./app .
 # RUN npm run build --production
 RUN npm run build
 
+# Expose the port, in case we're using Kubernetes
+# instead of docker-compose.
+EXPOSE 8042
 
+# Run NPM start in the working directory to kick-off the node process.
 CMD ["npm", "start"]

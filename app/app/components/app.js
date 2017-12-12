@@ -29,7 +29,7 @@ class App extends React.Component {
         },
       },
       historical: {},
-      symbols: ['BTC', 'ETH', 'LSK', 'OMG', 'CVC', 'GNT', 'NEO', 'XRP', 'NXT', 'ERC'],
+      symbols: ['BTC', 'ETH', 'LSK', 'OMG', 'CVC', 'GNT', 'NEO', 'XRP', 'NXT', 'ERC', 'ltc', 'IOT', 'XMR', 'xas', 'XLM', 'ARK', 'ETHOS'],
       list: []
     }
 

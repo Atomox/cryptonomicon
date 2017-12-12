@@ -1,8 +1,8 @@
 version: '2'
 services:
+  # Backend server
   nodeserver:
     container_name: nodeserver
-    # Node npm start
     build:
       context: .
       dockerfile: dockerfile-node-server
@@ -16,6 +16,6 @@ services:
       context: .
       dockerfile: dockerfile-react
     ports:
-      - 8080:8080
+      - 8042:8080
     volumes:
       - ./app/app:/var/www/html/app

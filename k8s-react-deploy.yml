@@ -1,0 +1,27 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: crypto-react-deploy
+spec:
+  replicas: 4
+  minReadySeconds: 4
+  # Deployment strategy
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      # Take 1 pod down at a time
+      maxUnavailable: 1
+      # Never have more than 1 above our # of replicas (so 10 + 1: never more than 11)
+      maxSurge: 1
+  template:
+    metadata:
+      labels:
+        app: crypto-react
+        tier: Frontend
+        version: "1.1"
+    spec:
+      containers:
+        - name: crypto-react
+          image: atomox/cryptonomicon:crypto-react-v1
+          ports:
+            - containerPort: 8042

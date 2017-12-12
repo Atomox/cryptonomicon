@@ -1,0 +1,26 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: crypto-server-deploy
+spec:
+  replicas: 4
+  minReadySeconds: 4
+  # Deployment strategy
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      # Take 1 pod down at a time
+      maxUnavailable: 1
+      # Never have more than 1 above our # of replicas (so 10 + 1: never more than 11)
+      maxSurge: 1
+  template:
+    metadata:
+      labels:
+        app: crypto-server
+        tier: Backend
+    spec:
+      containers:
+        - name: crypto-server
+          image: atomox/cryptonomicon:crypto-server-v1
+          ports:
+            - containerPort: 8383
