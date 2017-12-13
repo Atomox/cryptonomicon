@@ -21,6 +21,6 @@ spec:
     spec:
       containers:
         - name: crypto-server
-          image: atomox/cryptonomicon:crypto-server-v1
+          image: atomox/cryptonomicon:crypto-server-v1.2
           ports:
-            - containerPort: 8383
+            - containerPort: 30001

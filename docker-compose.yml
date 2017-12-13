@@ -7,7 +7,7 @@ services:
       context: .
       dockerfile: dockerfile-node-server
     ports:
-      - 8383:8383
+      - 30001:30001
     volumes:
       - ./server:/var/www/html
   # React App
@@ -16,6 +16,6 @@ services:
       context: .
       dockerfile: dockerfile-react
     ports:
-      - 8042:8080
+      - 30002:30002
     volumes:
       - ./app/app:/var/www/html/app

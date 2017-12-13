@@ -10,7 +10,7 @@ COPY ./server ./
 
 # Expose the port, in case we're using Kubernetes
 # instead of docker-compose.
-EXPOSE 8383
+EXPOSE 30001
 
 # Run NPM start in the working directory to kick-off the node process.
 CMD ["npm", "start"]

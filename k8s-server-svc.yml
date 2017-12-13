@@ -7,7 +7,7 @@ metadata:
 spec:
   type: NodePort
   ports:
-    - port: 8383
+    - port: 30001
       nodePort: 30001
       protocol: TCP
   selector:

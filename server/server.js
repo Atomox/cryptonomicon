@@ -5,7 +5,7 @@ const express = require('express');
 const crypto = require('./crypto.api');
 
 // Expose an endpoint
-const PORT = 8383;
+const PORT = 30001;
 const HOST = '0.0.0.0';
 
 const app = express();

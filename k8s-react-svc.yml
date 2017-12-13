@@ -7,10 +7,10 @@ metadata:
 spec:
   type: NodePort
   ports:
-    - port: 8042
+    - port: 30002
       nodePort: 30002
       protocol: TCP
   selector:
     app: crypto-react
     tier: Frontend
-    version: "1.1"
+    version: "1.2.1"

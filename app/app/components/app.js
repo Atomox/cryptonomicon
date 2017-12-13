@@ -64,7 +64,7 @@ class App extends React.Component {
    * Fetch the data from the server.
    */
   getData = (symbols, endpoint) => {
-    let url = 'http://localhost:8383/' + symbols.join(',');
+    let url = 'http://localhost:30001/' + symbols.join(',');
 
     switch(endpoint) {
       case '':
