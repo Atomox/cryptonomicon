@@ -20,18 +20,34 @@ A little react app with a node backend. Shows and updates crypto prices from the
 
 #### Steps using MiniKube
 
-##### Build the Things
-1. Build the server docker image locally.
+1. Install Minikube, VirtualBox
+
+2. Spin up minikube: `minikupe up`
+
+3. Get the IP of the minikube node:
+`minikube ip`
+
+4. Copy the /config/settings.js file to:
+`/Users/bhelmer/crypto`
+
+5. Edit the file's: `react.calls.host` with the value of this minikube node ip.
+
+6. Spin up the server:
 ```
-docker build -t "crypto_server:v1" -f dockerfile-node-server .
-```
-2. Build the app docker image locally.
-```
-docker build -t "crypto_app:v1" -f dockerfile-react .
-```
-3. Confirm we have our images:
-```
-docker images | grep 'crypto'
+kubectl apply -f k8s-server.yml
 ```
 
-##### Make them Pods
+7. Spin up the react piece:
+```
+kubectl apply -f k8s-react.yml
+```
+
+8. Confirm everything is up:
+```
+kubectl get po
+kubectl get svc
+kubectl get deploy
+```
+Make sure all statues look good.
+
+9. Hit the from step 3, with port 30002.
