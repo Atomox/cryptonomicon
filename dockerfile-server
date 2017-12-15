@@ -1,12 +1,15 @@
 FROM node:carbon
 
-WORKDIR /var/www/html
+WORKDIR /var/www/html/server/
 
 # Copy Package.json FIRST, so we can cache the install step.
-COPY ./server/package.json package.json
+COPY ./server/package.json ./package.json
 RUN npm install
 
 COPY ./server ./
+
+# Copy the settings file.
+COPY ./config /var/www/html/config
 
 # Expose the port, in case we're using Kubernetes
 # instead of docker-compose.

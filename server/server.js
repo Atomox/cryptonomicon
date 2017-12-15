@@ -2,11 +2,15 @@
 
 const express = require('express');
 
+const settings = require('../config/settings.js');
+
 const crypto = require('./crypto.api');
 
+console.log(settings);
+
 // Expose an endpoint
-const PORT = 30001;
-const HOST = '0.0.0.0';
+const PORT = settings.server.port;
+const HOST = settings.server.host;
 
 const app = express();
 

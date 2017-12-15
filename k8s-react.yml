@@ -1,0 +1,57 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: crypto-react
+  labels:
+    app: crypto-react
+spec:
+  type: NodePort
+  ports:
+    - port: 30002
+      nodePort: 30002
+      protocol: TCP
+  selector:
+    app: crypto-react
+    tier: Frontend
+    version: "1.2.3"
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: crypto-react
+spec:
+  replicas: 4
+  minReadySeconds: 4
+  # Deployment strategy
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      # Take 1 pod down at a time
+      maxUnavailable: 1
+      # Never have more than 1 above our # of replicas (so 10 + 1: never more than 11)
+      maxSurge: 1
+  template:
+    metadata:
+      labels:
+        app: crypto-react
+        tier: Frontend
+        version: "1.2.3"
+    spec:
+      containers:
+        - name: crypto-react
+          image: atomox/cryptonomicon:crypto-react-v1.2.3
+          ports:
+            - containerPort: 30002
+          volumeMounts:
+#            - name: app-config
+#              mountPath: /var/www/html/config/
+            - name: app-config-user
+              mountPath: /var/www/html/config/
+      volumes:
+# Does not work with DropBox, as volume mounts only work inside /Users/...
+#        - name: app-config
+#          hostPath:
+#            path: /opt/node/crypto
+        - name: app-config-user
+          hostPath:
+            path: /Users/bhelmer/crypto/

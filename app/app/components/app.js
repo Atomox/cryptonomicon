@@ -6,6 +6,10 @@ let _ = require('lodash');
 let CurrencyBox = require('./currency_box');
 let AppSettings = require('./app_settings');
 
+const settings = require('../../../config/settings.js');
+
+console.log('Settings: ', settings);
+
 class App extends React.Component {
 
   constructor(props) {
@@ -64,7 +68,9 @@ class App extends React.Component {
    * Fetch the data from the server.
    */
   getData = (symbols, endpoint) => {
-    let url = 'http://localhost:30001/' + symbols.join(',');
+    let host = 'http://192.168.99.100'; // http://localhost
+    let port = '30001';
+    let url = host + ':' + port + '/' + symbols.join(',');
 
     switch(endpoint) {
       case '':
@@ -185,7 +191,7 @@ class App extends React.Component {
 
     return (
       <div key={this.state.key}>
-          <h1>Crypto Prices</h1>
+          <h1>Cryptonomicon</h1>
           {<AppSettings
             currencies={this.state.settings.currencies}
             currency={this.state.settings.currency}

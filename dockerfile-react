@@ -1,6 +1,6 @@
 FROM node:9.2.0
 
-WORKDIR /var/www/html
+WORKDIR /var/www/html/app/
 
 # Install and configure `serve` globally.
 # @TODO Just using this for now.
@@ -14,6 +14,9 @@ RUN npm install
 
 # Now, bring over the code.
 COPY ./app .
+
+# Copy the settings file.
+COPY ./config /var/www/html/config
 
 # RUN npm run build --production
 RUN npm run build
