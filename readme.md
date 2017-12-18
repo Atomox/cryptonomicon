@@ -4,6 +4,25 @@ A little react app with a node backend. Shows and updates crypto prices from the
 
 ## Setup
 
+### Configuration:
+
+By default, there is a `config/settings.js` file where the app is configured. You setup the IPs you are using (docker vs kubernetes vs PROD, etc). Local npm start uses localhost, docker-compose uses localhost and 0.0.0.0, while kubernetes uses
+an IP that is created upon startup (run: `minikube ip`).
+
+You can set the IP, the port, etc.
+
+You can also set which Crypto Symbols the app spins up with.
+
+#### Config File Location
+If you are using anything other than Kubernetes, the file lives in this repo, under /config. If none exists, copy the default.settings.js to settings.js (in the same folder).
+
+If you are using Kubernetes, it lives elsewhere in your system. This allows you to run both docker-compose and kubernetes, if necessary.
+
+@TODO UPDATE this path to exclude username.
+Currently, it lives at:
+`/Users/bhelmer/crypto/settings.js`
+
+
 ### Local:
 
 #### Prereqs
