@@ -13,7 +13,7 @@ spec:
   selector:
     app: crypto-react
     tier: Frontend
-    version: "1.2.3"
+    version: "1.2.4"
 ---
 apiVersion: extensions/v1beta1
 kind: Deployment
@@ -35,11 +35,11 @@ spec:
       labels:
         app: crypto-react
         tier: Frontend
-        version: "1.2.3"
+        version: "1.2.4"
     spec:
       containers:
         - name: crypto-react
-          image: atomox/cryptonomicon:crypto-react-v1.2.3
+          image: atomox/cryptonomicon:crypto-react-v1.2.4
           ports:
             - containerPort: 30002
           volumeMounts:

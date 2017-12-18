@@ -33,7 +33,7 @@ class App extends React.Component {
         },
       },
       historical: {},
-      symbols: ['BTC', 'ETH', 'LSK', 'OMG', 'CVC', 'GNT', 'NEO', 'XRP', 'NXT', 'ERC', 'ltc', 'IOT', 'XMR', 'xas', 'XLM', 'ARK', 'ETHOS'],
+      symbols: settings.react.symbols,
       list: []
     }
 
@@ -68,8 +68,8 @@ class App extends React.Component {
    * Fetch the data from the server.
    */
   getData = (symbols, endpoint) => {
-    let host = 'http://192.168.99.100'; // http://localhost
-    let port = '30001';
+    let host = settings.react.calls.server.host; //'http://192.168.99.100'; // http://localhost
+    let port = settings.react.calls.server.port; //'30001';
     let url = host + ':' + port + '/' + symbols.join(',');
 
     switch(endpoint) {
