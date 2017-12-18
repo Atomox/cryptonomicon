@@ -5,7 +5,7 @@ services:
     container_name: nodeserver
     build:
       context: .
-      dockerfile: dockerfile-node-server
+      dockerfile: dockerfile-server
     ports:
       - 30001:30001
     volumes:
@@ -20,5 +20,5 @@ services:
     ports:
       - 30002:30002
     volumes:
-      - ./app/app:/var/www/html/app/app
+      - ./app/src:/var/www/html/app/src
       - ./config:/var/www/html/config

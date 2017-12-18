@@ -48,6 +48,10 @@ class App extends React.Component {
         if (data && data.symbol && data.data) {
           this.initList(data.symbol, data.data);
         }
+      })
+      .catch (err => {
+        console.log('Basic Symbol request failed.');
+        this.staleList(symbols);
       });
 
     // Get historical data if not set or if it is stale.
@@ -90,6 +94,11 @@ class App extends React.Component {
         Promise.reject(err) });
   }
 
+  staleList = (symbols) => {
+    symbols.map( (key, i) => {
+      prevState.list[symbols[i]].freshness = false })
+  };
+
   /**
    * Load fetched data into the state.
    */
@@ -113,7 +122,9 @@ class App extends React.Component {
         default:
           if (typeof symbols === 'object' && symbols) {
             symbols.map( (key, i) => {
-              prevState.list[symbols[i]] = data[key] })
+              prevState.list[symbols[i]] = data[key];
+              prevState.list[symbols[i]].freshness = true;
+            })
           }
           else {
             console.warn('Symbol list update without proper data.');
@@ -163,7 +174,9 @@ class App extends React.Component {
       let items = keys.map( (key, i) => {
 
         let currencies = Object.keys(this.state.list[key]).reduce( (result, k, i) => {
-          result.push(this.state.list[key][k]);
+          if (k !== 'freshness') {
+            result.push(this.state.list[key][k]);
+          }
           return result;
         }, []);
 
@@ -174,6 +187,7 @@ class App extends React.Component {
               currencies={ currencies }
               currency={this.state.settings.currency}
               symbol={key}
+              freshness={this.state.list[key].freshness}
               portfolio={(this.state.portfolio[key]) ? this.state.portfolio[key] : null}
               historical={(this.state.historical[key]) ? this.state.historical[key] : null}
             />

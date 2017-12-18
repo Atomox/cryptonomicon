@@ -14,8 +14,12 @@ class CurrencyBox extends React.Component {
    * Render our components.
    */
   render() {
+
+    let cardClass = "card" + ' ';
+    cardClass += (this.props.freshness && this.props.symbol !== 'ETH') ? 'fresh' : 'stale';
+
     return (
-      <div className="card">
+      <div className={cardClass}>
         <div className="card-divider">
           <h4>{this.props.symbol}</h4>
         </div>
