@@ -10,6 +10,15 @@ class CurrencyBox extends React.Component {
   formatPercent = (num) =>
     parseFloat(Math.round(num * 1000) / 1000).toFixed(2);
 
+  percentChange = (price, owned, spent) => {
+    if (owned == 0) { return 0; }
+
+    let breakeven = spent / owned;              // Spent / Owned
+    let profit = (price - breakeven) * owned;   // Profit: (Curr Price - Breakeven) * Owned
+    let growth = (profit / spent) * 100;        // Growth: Profit / Spent
+    return this.formatPercent(growth);
+  }
+
   /**
    * Render our components.
    */
@@ -17,6 +26,11 @@ class CurrencyBox extends React.Component {
 
     let cardClass = "card" + ' ';
     cardClass += (this.props.freshness) ? 'fresh' : 'stale';
+
+    let portfolio = (this.props.portfolio)
+      ? (this.props.portfolio)
+      : { amount: 0, spent: 0 };
+    portfolio.breakeven = portfolio.spent / portfolio.amount;
 
     return (
       <div className={cardClass}>
@@ -30,7 +44,7 @@ class CurrencyBox extends React.Component {
               this.props.currencies.map( (obj, i) => {
                 return (obj.TOSYMBOL === this.props.symbol || obj.TOSYMBOL !== this.props.currency) ? '' : (
                   <div className="row" key={i}>
-                    <div className="small-8 large-9 cell">
+                    <div className="small-8 large-8 cell">
                       <CurrencyPrice
                         isTitle={true}
                         symbol={obj.TOSYMBOL}
@@ -39,13 +53,38 @@ class CurrencyBox extends React.Component {
                         showCaret={false}/>
                     </div>
 
-                    <div className="small-4 large-3 cell text-right">
-                      <small className="titleCurr">
-                      <i className={ (obj.CHANGEPCTDAY > 0)
-                        ? 'icon icon-caret-up marketUp'
-                        : 'icon icon-caret-down marketDown'
-                      }>{this.formatPercent(obj.CHANGEPCTDAY)} %</i>
-                      </small>
+                    <div className="small-4 large-4 cell text-right">
+                      <div>
+                        <small className="titleCurr">
+                          <i className={ (obj.CHANGEPCTDAY > 0)
+                            ? 'icon icon-caret-up marketUp'
+                            : 'icon icon-caret-down marketDown'
+                          }>{this.formatPercent(obj.CHANGEPCTDAY)} %</i>
+                        </small>
+                      </div>
+                      <div className="portfolio breakeven">
+                        <small>
+                          <CurrencyPrice
+                            symbol={obj.TOSYMBOL}
+                            price={(portfolio.breakeven) ?portfolio.breakeven : 0}
+                            positiveChange={(obj.PRICE >= portfolio.breakeven)}
+                            showCaret={false} />
+                        </small>
+                      </div>
+                      <div className="portfolio percent">
+                        <small className="titleCurr">
+                          <i className={ (this.percentChange(obj.PRICE,
+                            portfolio.amount,
+                            portfolio.spent) > 0)
+                              ? 'icon icon-caret-up marketUp'
+                              : 'icon icon-caret-down marketDown'
+                          }>{
+                            this.percentChange(obj.PRICE,
+                              portfolio.amount,
+                              portfolio.spent)
+                          } %</i>
+                        </small>
+                      </div>
                     </div>
 
                     <div className="small-12 medium-8 cell">

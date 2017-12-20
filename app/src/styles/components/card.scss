@@ -1,5 +1,5 @@
 .card.fresh h4 {
-  
+
 }
 
 .card.stale, .card.stale .card-divider {
@@ -10,4 +10,8 @@
 .card.stale .marketUp,
 .card.stale .marketDown{
   color: #e6c584;
+}
+
+.card .portfolio {
+  border-top: 1px solid #eee;
 }

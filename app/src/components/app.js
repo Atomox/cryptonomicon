@@ -24,16 +24,7 @@ class App extends React.Component {
         currency: settings.react.currency,
         currencies: settings.react.currencies,
       },
-      portfolio:{
-        'ETH': {
-          amount: 6.07555,
-          spent: 1325.90,
-        },
-        'LSK': {
-          amount: 129.99999,
-          spent: 189.78,
-        },
-      },
+      portfolio: (settings.portfolio) ? settings.portfolio : {},
       historical: {},
       symbols: settings.react.symbols,
       list: []

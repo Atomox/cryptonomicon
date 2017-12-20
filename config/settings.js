@@ -21,4 +21,11 @@ module.exports = {
     port: 30001,
     protocol: 'http://',
   },
+  portfolio: {
+    ETH: {
+      amount: 5,
+      spent: 10,
+    },
+
+  }
 };
