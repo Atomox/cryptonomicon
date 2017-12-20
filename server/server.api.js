@@ -24,15 +24,15 @@ function getHttps(url) {
   return new Promise((resolve, reject) => {
 
     https.get(url, res => {
-      try {
-        res.setEncoding('utf8');
-        let body = '';
+      res.setEncoding('utf8');
+      let body = '';
 
-        res.on('data', data => {
-            body += data;
-        });
+      res.on('data', data => {
+          body += data;
+      });
 
-        res.on('end', () => {
+      res.on('end', () => {
+        try {
           if (!body) {
             throw new Error('Empty body when loading from' + url);
           }
@@ -45,9 +45,9 @@ function getHttps(url) {
           reject('Error parsing body. ' + err);
         }
       });
-    })
-    .on('error', err => {
-      reject('Error fetching URL: ' + err);
+      res.on('error', err => {
+        reject('Error fetching URL: ' + err);
+      });
     });
   });
 }
