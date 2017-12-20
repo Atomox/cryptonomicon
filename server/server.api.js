@@ -24,21 +24,26 @@ function getHttps(url) {
   return new Promise((resolve, reject) => {
 
     https.get(url, res => {
-      res.setEncoding('utf8');
-      let body = '';
+      try {
+        res.setEncoding('utf8');
+        let body = '';
 
-      res.on('data', data => {
-          body += data;
-      });
+        res.on('data', data => {
+            body += data;
+        });
 
-      res.on('end', () => {
-        if (!body) {
-          throw new Error('Empty body when loading from' + url);
+        res.on('end', () => {
+          if (!body) {
+            throw new Error('Empty body when loading from' + url);
+          }
+          // Make it JSON up in here.
+          body = JSON.parse(body.trim());
+
+          resolve(body);
         }
-        // Make it JSON up in here.
-        body = JSON.parse(body);
-
-        resolve(body);
+        catch (err) {
+          reject('Error parsing body. ' + err);
+        }
       });
     })
     .on('error', err => {
