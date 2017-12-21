@@ -83,7 +83,7 @@ function fetchCachedEndpoint(url, filename, max_age_minutes) {
             throw new Exception('CACHE EXPIRED.');
           }
 
-          console.log('FETCHING FROM CACHE', url);
+//          console.log('FETCHING FROM CACHE', url);
 
           return data;
       })

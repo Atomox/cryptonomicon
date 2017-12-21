@@ -8,7 +8,7 @@ const settings = require('../config/settings.js');
 const crypto = require('./crypto.api');
 const PORT = settings.server.port;
 const HOST = settings.server.host;
-console.log(settings);
+// console.log(settings);
 console.log('Running on http://', HOST, ':', PORT);
 console.log(' - - - - - - - - - - - - - - - - - - - - -');
 

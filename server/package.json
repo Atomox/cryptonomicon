@@ -1,15 +1,21 @@
 {
-  "name": "starwars",
+  "name": "crypto-server",
   "version": "1.0.0",
   "description": "",
   "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "prestart": "node ./tools/startMessage.js",
+    "start": "node server.js"
   },
   "author": "bhelmer",
   "license": "ISC",
   "dependencies": {
     "axios": "^0.17.1",
     "express": "^4.16.2"
+  },
+  "devDependencies": {
+    "colors": "^1.1.2",
+    "npm-run-all": "^4.1.2"
   }
 }

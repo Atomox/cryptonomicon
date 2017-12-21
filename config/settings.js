@@ -11,7 +11,7 @@ module.exports = {
     },
     title: 'Cryptonomicon',
     subtitle: 'on Docker',
-    symbols: ['BTC', 'ETH', 'LSK', 'OMG', 'CVC', 'GNT', 'NEO',  'ADA', 'XVG', 'XLM', 'ARK', 'XRP', 'NXT', 'ERC', 'LTC', 'IOT', 'XMR', 'XAS', 'XEM', 'ETHOS'],
+    symbols: ['BTC', 'ETH', 'LSK', 'TRX', 'OMG', 'CVC', 'GNT', 'NEO',  'ADA', 'XVG', 'XLM', 'ARK', 'XRP', 'NXT', 'ERC', 'LTC', 'IOT', 'XMR', 'XAS', 'XEM', 'ETHOS', 'BCC', 'BTG', 'BCD', 'LIZA'],
     currency: 'USD',
     currencies: ['USD','EUR','JPY','BTC'],
   },
@@ -22,10 +22,9 @@ module.exports = {
     protocol: 'http://',
   },
   portfolio: {
-    ETH: {
-      amount: 5,
-      spent: 10,
+    BTC: {
+      amount: 1,
+      spent: 1000,
     },
-
   }
 };

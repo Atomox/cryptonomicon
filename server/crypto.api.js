@@ -25,16 +25,12 @@ function getDataHistorical(ticker_symbol) {
     return Promise.reject('getData failed validation: [' + ticker_symbol + ']: ' + err);
   }
 
-  console.log('historial syms:', syms);
-
   let resp = syms_req.map((key, i) => {
     // Assemble the request.
     let my_url = crypto_endpoint.historical;
     my_url += '?fsym=' + key;
     my_url += '&' + 'tsym=' + 'USD';
     my_url +='&' + 'limit=' + 10;
-
-    console.log('  ',i, ') -> Req: ', my_url);
 
     return prepDataHistorial(api.fetchCachedEndpoint(my_url, './data/' + key + '.historial.json', 1440), key);
   });
@@ -56,8 +52,6 @@ function getData(ticker_symbol) {
   let my_url = crypto_endpoint.detail;
   my_url += '?fsyms=' + syms;
   my_url += '&' + 'tsyms=' + resp_symbols.join(',');
-
-  console.log('Requesting: ', my_url);
 
   return prepData(api.getHttps(my_url));
 }

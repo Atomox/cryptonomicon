@@ -4,8 +4,11 @@ let React = require('react');
 let _ = require('lodash');
 let cryptoHelp = require('../js/library/crypto_helper');
 
+let appState = require('../state/app.state');
+
 let CurrencyBox = require('./currency_box');
 let AppSettings = require('./app_settings');
+let AppMessages = require('./app_messages');
 
 const settings = require('../../../config/settings.js');
 console.log('Settings: ', settings);
@@ -14,22 +17,8 @@ console.log('Settings: ', settings);
 class App extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {
-      key: _.uniqueId(),
-      title: settings.react.title,
-      subtitle: settings.react.subtitle,
-      date: new Date(),
-      settings: {
-        updateSeconds: 10,
-        currency: settings.react.currency,
-        currencies: settings.react.currencies,
-      },
-      portfolio: (settings.portfolio) ? settings.portfolio : {},
-      historical: {},
-      symbols: settings.react.symbols,
-      list: []
-    }
 
+    appState.constructState(this, settings);
     this.refreshData(this.state.symbols);
   }
 
@@ -41,28 +30,12 @@ class App extends React.Component {
    *    A list of symbols to fetch (case sensitive).
    */
   refreshData = (symbols) => {
-    // Get data from the server, then load it up.
-    cryptoHelp.getData(symbols, '')
-      .then( data => {
-        if (!data || !data.symbol || !data.data) {
-          throw new Error('Malformed symbol response.');
-        }
-        this.initList(data.symbol, data.data);
-      })
-      .catch (err => this.staleList(symbols));
+    appState.refreshData(this, symbols);
+  };
 
-    // Get historical data if not set or if it is stale.
-    cryptoHelp.getData(symbols, 'historical')
-      .then( data => {
-        if (typeof data !== 'object' && !data) {
-          throw new Error('Malformed historical response.');
-        }
-        let syms = data.map( d => d.symbol );
-        this.initList(syms, data, 'historical');
-      })
-      .catch (err => console.log('Historical fetch Error: ',err));
-  }
-
+  setMessenger = (level, show, title, body) => {
+    appState.setMessager(this, level, show, title, body);
+  };
 
   /**
    * Set passed symbols as stale, so the UI can convey
@@ -72,23 +45,7 @@ class App extends React.Component {
    *    A list of symbols to fetch (case sensitive).
    */
   staleList = (symbols) => {
-    if (!symbols) { return; };
-    try {
-      this.setState((prevState) => {
-        symbols.map( (key, i) => {
-          if (typeof prevState.list[symbols[i]] === 'undefined'
-            || prevState.list[symbols[i]] === null) {
-            prevState.list[symbols[i]] = {};
-          }
-          prevState.list[symbols[i]].freshness = false;
-        });
-
-        return prevState;
-      });
-    }
-    catch (err) {
-      console.log('Error during stale update: ', err);
-    }
+    appState.setSymbolsStale(this, symbols);
   };
 
   /**
@@ -102,48 +59,7 @@ class App extends React.Component {
    *    Key to determine which type of data this is.
    */
   initList = (symbols, data, context) => {
-    try {
-      this.setState((prevState) => {
-
-        switch (context) {
-
-          case 'historical':
-
-            if (typeof data !== 'object' || !data) {
-              throw new Error('Symbol list update without proper data.');
-            }
-            data.map( (key, i) => prevState.historical[key.symbol] = key.data);
-            break;
-
-          case '':
-          default:
-
-            if (typeof symbols !== 'object' || !symbols) {
-              throw new Error('Symbol list update without proper data.');
-            }
-
-            // Update the state of each crypto symbol's price,
-            // and mark as fresh data.
-            Object.keys(data).map( key => {
-              prevState.list[key] = data[key];
-              prevState.list[key].freshness = true;
-            });
-
-            // Any missing keys from the response should become stale.
-            let rkeys = Object.keys(data);
-            let diff = Object.keys(prevState.list)
-              .filter(item => rkeys.indexOf(item) === -1);
-
-            if (diff.length) {  this.staleList(diff);  }
-            break;
-        }
-
-        return prevState;
-      });
-    }
-    catch (err) {
-      console.warn('Error during init state update: ', err);
-    }
+    appState.setSymbolState(this, symbols, data, context);
   };
 
   /**
@@ -227,6 +143,14 @@ class App extends React.Component {
             {this.state.subtitle}
             </span>
         </h1>
+
+        {<AppMessages
+          type={this.state.messages.type}
+          display={this.state.messages.display}
+          title={this.state.messages.title}
+          body={this.state.messages.body}
+          />}
+
         {<AppSettings
           currencies={this.state.settings.currencies}
           currency={this.state.settings.currency}
